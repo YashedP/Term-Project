@@ -1,25 +1,28 @@
 /*
 
-  Authors (group members):
+  Authors (group members): Yash Jani, Khurram Valiyev, 
   Email addresses of group members:
-  Group name:
+  Group name: groupName
 
-  Course:
-  Section:
+  Course: CSE 2010
+  Section: 4
 
   Description of the overall algorithm:
 
 
 */
 
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
 
-public class HangmanPlayer
-{
+public class HangmanPlayer {
 
     // initialize HangmanPlayer with a file of English words
-    public HangmanPlayer(String wordFile)
-    {
-
+    // Pre-processing the word file that contains a list of English words in each line
+    // Array of lists 
+    public HangmanPlayer(String wordFile) throws FileNotFoundException {
+        final Scanner wordFileInput = new Scanner(new File(wordFile));
     }
 
     // based on the current (partial or intitially blank) word
@@ -28,10 +31,9 @@ public class HangmanPlayer
     // isNewWord: indicates a new hidden word
     // returns the guessed letter
     // assume all letters are in lower case
-    public char guess(String currentWord, boolean isNewWord)
-    {
-	char guess = ' ';
-	
+    public char guess(String currentWord, boolean isNewWord) {
+        char guess = ' ';
+
         return guess;
     }
 
@@ -44,8 +46,7 @@ public class HangmanPlayer
     //                                   or the whole word if the guessed letter was the
     //                                   last letter needed
     // b.         false               partial word without the guessed letter
-    public void feedback(boolean isCorrectGuess, String currentWord)
-    {
+    public void feedback(boolean isCorrectGuess, String currentWord) {
 
     }
 
