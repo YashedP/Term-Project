@@ -11,6 +11,8 @@
 
 */
 
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,6 +21,12 @@ public class HangmanPlayer {
 
   // Array that will store every word in the word list.
   private final String[][] masterWordMatrix = new String[23][];
+
+  // Linked List that will be used to hold all possible words for a given guess.
+  private final LinkedList<String> currentPossibleWords = new LinkedList<String>();
+
+  // Holds all the letters already guessed that were incorrect.
+  private final HashSet<Character> alreadyGuessedLetters = new HashSet<Character>();
 
   // initialize HangmanPlayer with a file of English words
   // Pre-processing the word file that contains a list of English words in each
