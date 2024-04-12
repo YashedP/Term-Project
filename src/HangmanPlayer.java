@@ -28,6 +28,9 @@ public class HangmanPlayer {
     // Holds the length of the current hidden string
     private int hiddenLength;
 
+    // First guess
+    private char[] firstGuess = {'a', 'a', 'a', 'a', 'e', 'e', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'a', 'e'};
+
     // initialize HangmanPlayer with a file of English words
     // Pre-processing the word file that contains a list of English words in each
     // line
@@ -89,7 +92,9 @@ public class HangmanPlayer {
     // assume all letters are in lower case
     public char guess(String currentWord, boolean isNewWord) {
         if (isNewWord) {
+            hiddenLength = currentWord.length();
 
+            return firstGuess[hiddenLength - 2];
         }
 
         char guess = ' ';
