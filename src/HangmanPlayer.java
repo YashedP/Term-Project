@@ -25,14 +25,13 @@ public class HangmanPlayer {
     // Linked List that will be used to hold all possible words for a given guess.
     private final LinkedList<String> currentPossibleWords = new LinkedList<String>();
 
-    // Holds all the letters already guessed that were incorrect.
-    private final HashSet<Character> alreadyGuessedLetters = new HashSet<Character>();
-
     // Holds the length of the current hidden string
     private int hiddenLength;
 
     // Holds the letters that have already been guessed and known to be incorrect.
     private StringBuilder incorrectGuessedLetters = new StringBuilder();
+
+    private char perviousGuess = ' ';
 
     // First guess
     private char[] firstGuess = { 'a', 'a', 'a', 'a', 'e', 'e', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'i', 'i', 'i',
@@ -82,7 +81,7 @@ public class HangmanPlayer {
             final int newWordLength = newWord.length();
 
             // Adds the word the the corresponding spot in the array if it is at least two
-            // letter long.
+            // letters long.
             if (newWordLength >= 2) {
                 masterWordMatrix[newWordLength - 2][addIndex[newWordLength - 2]] = newWord;
                 addIndex[newWordLength - 2] += 1;
@@ -90,9 +89,9 @@ public class HangmanPlayer {
         }
     }
 
-    // based on the current (partial or intitially blank) word
+    // based on the current (partial or initially blank) word
     // guess a letter
-    // currentWord: current word, currenWord.length has the length of the hidden
+    // currentWord: current word, currentWord.length has the length of the hidden
     // word
     // isNewWord: indicates a new hidden word
     // returns the guessed letter
@@ -101,25 +100,9 @@ public class HangmanPlayer {
         if (isNewWord) {
             hiddenLength = currentWord.length();
 
-            // Make the linkedlist
+            // Make the LinkedList
 
             return firstGuess[hiddenLength - 2];
-        }
-
-        // Create a linked list iterator
-        Iterator<String> iterator = currentPossibleWords.iterator();
-        int count = 0;
-
-        int[] letterCount = new int[26];
-
-        while (iterator.hasNext()) {
-            String word = iterator.next();
-            count++;
-
-            for (int i = 0; i < hiddenLength; i++) {
-                int letter = word.charAt(i) - 'a';
-                letterCount[letter]++;
-            }
         }
 
         // Creates the String Builder that will be used to create the Regex Pattern.
@@ -136,7 +119,33 @@ public class HangmanPlayer {
 
         Matcher matcher = Pattern.compile(regexString).matcher("");
 
+        // Create a linked list iterator
+        Iterator<String> iterator = currentPossibleWords.iterator();
+        int count = 0;
+
+        int[] letterCount = new int[26];
+
+        while (iterator.hasNext()) {
+            String word = iterator.next();
+            count++;
+
+            // Checks if the current word matches the current pattern.
+            if (matcher.reset(word).matches()) {
+                // If the words matches, it adds all characters to the letterCount.
+                for (int i = 0; i < hiddenLength; i++) {
+                    int letter = word.charAt(i) - 'a';
+                    letterCount[letter]++;
+                }
+            } else {
+                // If it does not match, it removes the string from the list.
+                iterator.remove();
+            }
+        }
+
         char guess = ' ';
+
+        // Finds the largest element in the array (letter with highest count) and
+        // guesses that letter.
         int max = 0;
         for (int i = 0; i < 26; i++) {
             if (letterCount[i] > max) {
@@ -144,6 +153,9 @@ public class HangmanPlayer {
                 guess = (char) (i + 'a');
             }
         }
+
+        // Need to save the guess so it can be used in the feedback method.
+        perviousGuess = guess;
 
         return guess;
     }
@@ -160,5 +172,9 @@ public class HangmanPlayer {
     // b. false partial word without the guessed letter
     public void feedback(boolean isCorrectGuess, String currentWord) {
 
+        // Update incorrectGuessedLetters using the isCorrectGuess and the previousGuess
+        if (!isCorrectGuess) {
+            incorrectGuessedLetters.append(perviousGuess);
+        }
     }
 }
