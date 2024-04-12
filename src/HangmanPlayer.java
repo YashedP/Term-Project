@@ -35,10 +35,10 @@ public class HangmanPlayer {
     masterWordMatrix[5] = new String[23734];
     masterWordMatrix[6] = new String[29926];
     masterWordMatrix[7] = new String[32380];
-    masterWordMatrix[8] = new String[3086];
-    masterWordMatrix[9] = new String[2601];
-    masterWordMatrix[10] = new String[2064];
-    masterWordMatrix[11] = new String[1493];
+    masterWordMatrix[8] = new String[30867];
+    masterWordMatrix[9] = new String[26011];
+    masterWordMatrix[10] = new String[20460];
+    masterWordMatrix[11] = new String[14938];
     masterWordMatrix[12] = new String[9762];
     masterWordMatrix[13] = new String[5924];
     masterWordMatrix[14] = new String[3377];
@@ -53,16 +53,22 @@ public class HangmanPlayer {
 
     // Array that holds the current index to add each new word to the
     // masterWordMatrix.
-    final int[] addIndex = new int[26];
+    final int[] addIndex = new int[23];
 
     final Scanner wordFileInput = new Scanner(new File(wordFile));
 
     while (wordFileInput.hasNextLine()) {
 
+      // Finds the length of the next word in the list.
       final String newWord = wordFileInput.nextLine();
       final int newWordLength = newWord.length();
-      masterWordMatrix[newWordLength][addIndex[newWordLength]] = newWord;
-      addIndex[newWordLength] += 1;
+
+      // Adds the word the the corresponding spot in the array if it is at least two
+      // letter long.
+      if (newWordLength >= 2) {
+        masterWordMatrix[newWordLength - 2][addIndex[newWordLength - 2]] = newWord;
+        addIndex[newWordLength - 2] += 1;
+      }
     }
   }
 
