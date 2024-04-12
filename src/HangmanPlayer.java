@@ -19,92 +19,95 @@ import java.io.FileNotFoundException;
 
 public class HangmanPlayer {
 
-  // Array that will store every word in the word list.
-  private final String[][] masterWordMatrix = new String[23][];
+    // Array that will store every word in the word list.
+    private final String[][] masterWordMatrix = new String[23][];
 
-  // Linked List that will be used to hold all possible words for a given guess.
-  private final LinkedList<String> currentPossibleWords = new LinkedList<String>();
+    // Linked List that will be used to hold all possible words for a given guess.
+    private final LinkedList<String> currentPossibleWords = new LinkedList<String>();
 
-  // Holds all the letters already guessed that were incorrect.
-  private final HashSet<Character> alreadyGuessedLetters = new HashSet<Character>();
+    // Holds all the letters already guessed that were incorrect.
+    private final HashSet<Character> alreadyGuessedLetters = new HashSet<Character>();
 
-  // initialize HangmanPlayer with a file of English words
-  // Pre-processing the word file that contains a list of English words in each
-  // line
-  // Array of lists
-  public HangmanPlayer(String wordFile) throws FileNotFoundException {
+    // initialize HangmanPlayer with a file of English words
+    // Pre-processing the word file that contains a list of English words in each
+    // line
+    // Array of lists
+    public HangmanPlayer(String wordFile) throws FileNotFoundException {
 
-    // Creates the size of array for each length of word
-    masterWordMatrix[0] = new String[155];
-    masterWordMatrix[1] = new String[1351];
-    masterWordMatrix[2] = new String[5110];
-    masterWordMatrix[3] = new String[9987];
-    masterWordMatrix[4] = new String[17477];
-    masterWordMatrix[5] = new String[23734];
-    masterWordMatrix[6] = new String[29926];
-    masterWordMatrix[7] = new String[32380];
-    masterWordMatrix[8] = new String[30867];
-    masterWordMatrix[9] = new String[26011];
-    masterWordMatrix[10] = new String[20460];
-    masterWordMatrix[11] = new String[14938];
-    masterWordMatrix[12] = new String[9762];
-    masterWordMatrix[13] = new String[5924];
-    masterWordMatrix[14] = new String[3377];
-    masterWordMatrix[15] = new String[1813];
-    masterWordMatrix[16] = new String[842];
-    masterWordMatrix[17] = new String[428];
-    masterWordMatrix[18] = new String[198];
-    masterWordMatrix[19] = new String[82];
-    masterWordMatrix[20] = new String[41];
-    masterWordMatrix[21] = new String[17];
-    masterWordMatrix[22] = new String[5];
+        // Creates the size of array for each length of word
+        masterWordMatrix[0] = new String[155];
+        masterWordMatrix[1] = new String[1351];
+        masterWordMatrix[2] = new String[5110];
+        masterWordMatrix[3] = new String[9987];
+        masterWordMatrix[4] = new String[17477];
+        masterWordMatrix[5] = new String[23734];
+        masterWordMatrix[6] = new String[29926];
+        masterWordMatrix[7] = new String[32380];
+        masterWordMatrix[8] = new String[30867];
+        masterWordMatrix[9] = new String[26011];
+        masterWordMatrix[10] = new String[20460];
+        masterWordMatrix[11] = new String[14938];
+        masterWordMatrix[12] = new String[9762];
+        masterWordMatrix[13] = new String[5924];
+        masterWordMatrix[14] = new String[3377];
+        masterWordMatrix[15] = new String[1813];
+        masterWordMatrix[16] = new String[842];
+        masterWordMatrix[17] = new String[428];
+        masterWordMatrix[18] = new String[198];
+        masterWordMatrix[19] = new String[82];
+        masterWordMatrix[20] = new String[41];
+        masterWordMatrix[21] = new String[17];
+        masterWordMatrix[22] = new String[5];
 
-    // Array that holds the current index to add each new word to the
-    // masterWordMatrix.
-    final int[] addIndex = new int[23];
+        // Array that holds the current index to add each new word to the
+        // masterWordMatrix.
+        final int[] addIndex = new int[23];
 
-    final Scanner wordFileInput = new Scanner(new File(wordFile));
+        final Scanner wordFileInput = new Scanner(new File(wordFile));
 
-    while (wordFileInput.hasNextLine()) {
+        while (wordFileInput.hasNextLine()) {
 
-      // Finds the length of the next word in the list.
-      final String newWord = wordFileInput.nextLine();
-      final int newWordLength = newWord.length();
+            // Finds the length of the next word in the list.
+            final String newWord = wordFileInput.nextLine();
+            final int newWordLength = newWord.length();
 
-      // Adds the word the the corresponding spot in the array if it is at least two
-      // letter long.
-      if (newWordLength >= 2) {
-        masterWordMatrix[newWordLength - 2][addIndex[newWordLength - 2]] = newWord;
-        addIndex[newWordLength - 2] += 1;
-      }
+            // Adds the word the the corresponding spot in the array if it is at least two
+            // letter long.
+            if (newWordLength >= 2) {
+                masterWordMatrix[newWordLength - 2][addIndex[newWordLength - 2]] = newWord;
+                addIndex[newWordLength - 2] += 1;
+            }
+        }
     }
-  }
 
-  // based on the current (partial or intitially blank) word
-  // guess a letter
-  // currentWord: current word, currenWord.length has the length of the hidden
-  // word
-  // isNewWord: indicates a new hidden word
-  // returns the guessed letter
-  // assume all letters are in lower case
-  public char guess(String currentWord, boolean isNewWord) {
-    char guess = ' ';
+    // based on the current (partial or initially blank) word
+    // guess a letter
+    // currentWord: current word, currentWord.length has the length of the hidden
+    // word
+    // isNewWord: indicates a new hidden word
+    // returns the guessed letter
+    // assume all letters are in lower case
+    public char guess(String currentWord, boolean isNewWord) {
+        char guess = ' ';
 
-    return guess;
-  }
+        StringBuilder currentWordBuilder = new StringBuilder(currentWord);
+        StringBuilder regexString = new StringBuilder("^(?!.*[])$");
 
-  // feedback on the guessed letter
-  // isCorrectGuess: true if the guessed letter is one of the letters in the
-  // hidden word
-  // currentWord: partially filled or blank word
-  //
-  // Case isCorrectGuess currentWord
-  // a. true partial word with the guessed letter
-  // or the whole word if the guessed letter was the
-  // last letter needed
-  // b. false partial word without the guessed letter
-  public void feedback(boolean isCorrectGuess, String currentWord) {
+        return guess;
+    }
 
-  }
+    // feedback on the guessed letter
+    // isCorrectGuess: true if the guessed letter is one of the letters in the
+    // hidden word
+    // currentWord: partially filled or blank word
+    //
+    // Case isCorrectGuess currentWord
+    // a. true partial word with the guessed letter
+    // or the whole word if the guessed letter was the
+    // last letter needed
+    // b. false partial word without the guessed letter
+    public void feedback(boolean isCorrectGuess, String currentWord) {
+
+    }
 
 }
