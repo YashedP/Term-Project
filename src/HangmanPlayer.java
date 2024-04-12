@@ -10,6 +10,7 @@
 */
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.io.File;
@@ -94,10 +95,35 @@ public class HangmanPlayer {
         if (isNewWord) {
             hiddenLength = currentWord.length();
 
+            
+
             return firstGuess[hiddenLength - 2];
         }
 
+        // Create a linked list iterator
+        Iterator<String> iterator = currentPossibleWords.iterator();
+        int count = 0;
+
+        int[] letterCount = new int[26];
+
+        while (iterator.hasNext()) {
+            String word = iterator.next();
+            count++;
+
+            for (int i = 0; i < hiddenLength; i++) {
+                int letter = word.charAt(i) - 'a';
+                letterCount[letter]++;
+            }
+        }
+
         char guess = ' ';
+        int max = 0;
+        for (int i = 0; i < 26; i++) {
+            if (letterCount[i] > max) {
+                max = letterCount[i];
+                guess = (char) (i + 'a');
+            }
+        }
 
         return guess;
     }
