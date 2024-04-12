@@ -15,6 +15,8 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class HangmanPlayer {
     // Array that will store every word in the word list.
@@ -29,8 +31,12 @@ public class HangmanPlayer {
     // Holds the length of the current hidden string
     private int hiddenLength;
 
+    // Holds the letters that have already been guessed and known to be incorrect.
+    private StringBuilder incorrectGuessedLetters = new StringBuilder();
+
     // First guess
-    private char[] firstGuess = {'a', 'a', 'a', 'a', 'e', 'e', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'a', 'e'};
+    private char[] firstGuess = { 'a', 'a', 'a', 'a', 'e', 'e', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'i', 'i', 'i',
+            'o', 'o', 'o', 'o', 'a', 'e' };
 
     // initialize HangmanPlayer with a file of English words
     // Pre-processing the word file that contains a list of English words in each
@@ -95,7 +101,7 @@ public class HangmanPlayer {
         if (isNewWord) {
             hiddenLength = currentWord.length();
 
-            
+            // Make the linkedlist
 
             return firstGuess[hiddenLength - 2];
         }
@@ -115,6 +121,20 @@ public class HangmanPlayer {
                 letterCount[letter]++;
             }
         }
+
+        // Creates the String Builder that will be used to create the Regex Pattern.
+        StringBuilder currentWordBuilder = new StringBuilder(currentWord);
+
+        for (int i = 0; i < hiddenLength; i++) {
+            if (currentWordBuilder.charAt(i) == ' ') {
+                currentWordBuilder.setCharAt(i, '.');
+            }
+        }
+
+        // Creates the regex pattern that will be used to check each word in the list.
+        String regexString = "^(?!*[" + incorrectGuessedLetters + "])." + currentWordBuilder + "$";
+
+        Matcher matcher = Pattern.compile(regexString).matcher("");
 
         char guess = ' ';
         int max = 0;
