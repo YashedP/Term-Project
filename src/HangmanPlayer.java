@@ -9,12 +9,12 @@
   Description of the overall algorithm:
 */
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -48,7 +48,7 @@ public class HangmanPlayer {
     // Pre-processing the word file that contains a list of English words in each
     // line
     // Array of lists
-    public HangmanPlayer(String wordFile) throws FileNotFoundException {
+    public HangmanPlayer(String wordFile) throws IOException {
 
         // Creates the size of array for each length of word
         masterWordMatrix[0] = new String[155];
@@ -79,25 +79,23 @@ public class HangmanPlayer {
         // masterWordMatrix.
         final int[] addIndex = new int[23];
 
-        final Scanner wordFileInput = new Scanner(new File(wordFile));
-
-        while (wordFileInput.hasNextLine()) {
-
-            // Finds the length of the next word in the list.
-            String newWord = wordFileInput.nextLine();
-            final int newWordLength = newWord.length();
-
-            // Adds the word the the corresponding spot in the array if it is at least two
-            // letters long.
-            if (newWordLength >= 2) {
-                // Changes any word that is capitalized and makes it lowercase
-                if (Character.isUpperCase(newWord.charAt(0))) {
-                    newWord = newWord.substring(0, 1).toLowerCase() + newWord.substring(1);
-                }   
+        try (BufferedReader wordFileInput = new BufferedReader(new FileReader(wordFile))) {
+            String newWord;
+            while ((newWord = wordFileInput.readLine()) != null) {
+                final int newWordLength = newWord.length();
                 
-                // Adds the word to the array and increments the index.
-                masterWordMatrix[newWordLength - 2][addIndex[newWordLength - 2]] = newWord;
-                addIndex[newWordLength - 2] += 1;
+                // Adds the word the the corresponding spot in the array if it is at least two
+                // letters long.
+                if (newWordLength >= 2) {
+                    // Changes any word that is capitalized and makes it lowercase
+                    if (Character.isUpperCase(newWord.charAt(0))) {
+                        newWord = newWord.substring(0, 1).toLowerCase() + newWord.substring(1);
+                    }   
+                    
+                    // Adds the word to the array and increments the index
+                    masterWordMatrix[newWordLength - 2][addIndex[newWordLength - 2]] = newWord;
+                    addIndex[newWordLength - 2] += 1;
+                }
             }
         }
     }
