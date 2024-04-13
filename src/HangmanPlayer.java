@@ -31,11 +31,15 @@ public class HangmanPlayer {
     // Holds the letters that have already been guessed and known to be incorrect.
     private StringBuilder incorrectGuessedLetters = new StringBuilder();
 
+    // Holds the previous guess
     private char perviousGuess = ' ';
+
+    // Keeps track what characters have been found in the current word being checked so far
+    private HashSet<Integer> characterChecked = new HashSet<Integer>();
 
     // First guess
     private char[] firstGuess = { 'a', 'a', 'a', 'a', 'e', 'e', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'i', 'i', 'i',
-            'o', 'o', 'o', 'o', 'a', 'e' };
+            'o', 'o', 'o', 'o', 'o', 'a' };
 
     // initialize HangmanPlayer with a file of English words
     // Pre-processing the word file that contains a list of English words in each
@@ -101,6 +105,10 @@ public class HangmanPlayer {
             hiddenLength = currentWord.length();
 
             // Make the LinkedList
+            currentPossibleWords.clear();
+            for (int i = 0; i < masterWordMatrix[hiddenLength - 2].length; i++) {
+                currentPossibleWords.add(masterWordMatrix[hiddenLength - 2][i]);
+            }
 
             return firstGuess[hiddenLength - 2];
         }
@@ -116,25 +124,31 @@ public class HangmanPlayer {
 
         // Creates the regex pattern that will be used to check each word in the list.
         String regexString = "^(?!*[" + incorrectGuessedLetters + "])." + currentWordBuilder + "$";
-
+        //! CRASHES HERE
         Matcher matcher = Pattern.compile(regexString).matcher("");
 
         // Create a linked list iterator
         Iterator<String> iterator = currentPossibleWords.iterator();
-        int count = 0;
 
         int[] letterCount = new int[26];
 
         while (iterator.hasNext()) {
             String word = iterator.next();
-            count++;
 
             // Checks if the current word matches the current pattern.
             if (matcher.reset(word).matches()) {
                 // If the words matches, it adds all characters to the letterCount.
+                // Clear the hashset to start anew
+                characterChecked.clear();
+
                 for (int i = 0; i < hiddenLength; i++) {
                     int letter = word.charAt(i) - 'a';
-                    letterCount[letter]++;
+
+                    // If the letter is already not in the hashset meaning it already occurs in the word
+                    // Then increase the count of that letter
+                    if (characterChecked.add(letter)) {
+                        letterCount[letter]++;
+                    }
                 }
             } else {
                 // If it does not match, it removes the string from the list.
