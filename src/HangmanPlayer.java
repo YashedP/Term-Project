@@ -123,7 +123,7 @@ public class HangmanPlayer {
         }
 
         // Creates the regex pattern that will be used to check each word in the list.
-        String regexString = "^(?!*[" + incorrectGuessedLetters + "])." + currentWordBuilder + "$";
+        String regexString = "^(?![" + incorrectGuessedLetters + "])." + currentWordBuilder + "\\*$";
         //! CRASHES HERE
         Matcher matcher = Pattern.compile(regexString).matcher("");
 
