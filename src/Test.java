@@ -1,10 +1,10 @@
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Test {
 
-    public static void main(final String[] args) throws FileNotFoundException {
+    public static void main(final String[] args) throws IOException {
         long startTime = System.nanoTime();
         HangmanPlayer testPlayer = new HangmanPlayer("words.txt");
         long endTime = System.nanoTime();
