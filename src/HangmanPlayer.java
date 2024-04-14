@@ -167,7 +167,7 @@ public class HangmanPlayer {
 
                         // If the letter is already not in the HashSet meaning it already occurs in the
                         // word
-                        // Then increase the count of that letter
+                        // Then increase the count of that letter.
                         if (characterChecked.add(letter)) {
                             letterCount[letter]++;
                         }
