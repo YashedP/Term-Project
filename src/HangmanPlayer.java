@@ -37,7 +37,8 @@ public class HangmanPlayer {
     // Holds the previous guess
     private char previousGuess = ' ';
 
-    // Keeps track what characters have been found in the current word being checked so far
+    // Keeps track what characters have been found in the current word being checked
+    // so far
     private HashSet<Integer> characterChecked = new HashSet<Integer>();
 
     // First guess
@@ -83,15 +84,15 @@ public class HangmanPlayer {
             String newWord;
             while ((newWord = wordFileInput.readLine()) != null) {
                 final int newWordLength = newWord.length();
-                
+
                 // Adds the word the the corresponding spot in the array if it is at least two
                 // letters long.
                 if (newWordLength >= 2) {
                     // Changes any word that is capitalized and makes it lowercase
                     if (Character.isUpperCase(newWord.charAt(0))) {
                         newWord = newWord.substring(0, 1).toLowerCase() + newWord.substring(1);
-                    }   
-                    
+                    }
+
                     // Adds the word to the array and increments the index
                     masterWordMatrix[newWordLength - 2][addIndex[newWordLength - 2]] = newWord;
                     addIndex[newWordLength - 2] += 1;
@@ -111,7 +112,8 @@ public class HangmanPlayer {
         if (isNewWord) {
             hiddenLength = currentWord.length();
 
-            // Clears the list from the previous guessed word and add all the words of the same length the list
+            // Clears the list from the previous guessed word and add all the words of the
+            // same length the list
             currentPossibleWords.clear();
             for (int i = 0; i < masterWordMatrix[hiddenLength - 2].length; i++) {
                 currentPossibleWords.add(masterWordMatrix[hiddenLength - 2][i]);
@@ -155,7 +157,7 @@ public class HangmanPlayer {
             // Checks if the current word matches the current pattern.
             if (matcher.reset(word).matches()) {
                 // If the words matches, it adds all characters to the letterCount.
-                // Clear the hashset to start anew
+                // Clear the HashSet to start anew
                 characterChecked.clear();
 
                 for (int i = 0; i < hiddenLength; i++) {
@@ -163,7 +165,8 @@ public class HangmanPlayer {
                     if (currentWordBuilder.charAt(i) == '.') {
                         int letter = word.charAt(i) - 'a';
 
-                        // If the letter is already not in the hashset meaning it already occurs in the word
+                        // If the letter is already not in the HashSet meaning it already occurs in the
+                        // word
                         // Then increase the count of that letter
                         if (characterChecked.add(letter)) {
                             letterCount[letter]++;
@@ -181,7 +184,7 @@ public class HangmanPlayer {
         // Finds the largest element in the array (letter with highest count) and
         // guesses that letter.
         int max = 0;
-        
+
         letterLoop: for (int i = 0; i < 26; i++) {
             for (int j = 0; j < incorrectGuessedLetters.length(); j++) {
                 if (i == incorrectGuessedLetters.charAt(j) - 'a') {
