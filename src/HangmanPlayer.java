@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.Random;
 
 public class HangmanPlayer {
     // Array that will store every word in the word list.
@@ -36,6 +37,8 @@ public class HangmanPlayer {
 
     // Holds the previous guess
     private char previousGuess = ' ';
+
+    private Random RNG = new Random();
 
     // Keeps track what characters have been found in the current word being checked
     // so far
@@ -123,6 +126,7 @@ public class HangmanPlayer {
             incorrectGuessedLetters.setLength(0);
             correctGuessedLetters.setLength(0);
 
+            previousGuess = firstGuess[hiddenLength - 2];
             return firstGuess[hiddenLength - 2];
         }
 
@@ -140,9 +144,9 @@ public class HangmanPlayer {
         // Creates the regex pattern that will be used to check each word in the list.
         String regexString;
         if (incorrectGuessedLetters.isEmpty()) {
-            regexString = "^.*" + currentWordBuilder + ".*$";
+            regexString = "^.*" + currentWordBuilder + "*$";
         } else {
-            regexString = "^(?!.*[" + incorrectGuessedLetters + "]).*" + currentWordBuilder + ".*$";
+            regexString = "^(?!.*[" + incorrectGuessedLetters + "])*" + currentWordBuilder + "*$";
         }
         Matcher matcher = Pattern.compile(regexString).matcher("");
 
@@ -150,6 +154,7 @@ public class HangmanPlayer {
         Iterator<String> iterator = currentPossibleWords.iterator();
 
         int[] letterCount = new int[26];
+        int totalLetters = 0;
 
         while (iterator.hasNext()) {
             String word = iterator.next();
@@ -163,13 +168,18 @@ public class HangmanPlayer {
                 for (int i = 0; i < hiddenLength; i++) {
                     // Only counts letters in places that haven't been guessed yet
                     if (currentWordBuilder.charAt(i) == '.') {
-                        int letter = word.charAt(i) - 'a';
+                        char letter = word.charAt(i);
+                        int letterInt = letter - 'a';
 
                         // If the letter is already not in the HashSet meaning it already occurs in the
-                        // word
+                        // word and the letter has not already been guessed.
                         // Then increase the count of that letter.
-                        if (characterChecked.add(letter)) {
-                            letterCount[letter]++;
+                        // Also increment the total letters in the array.
+                        if (characterChecked.add(letterInt)
+                                && incorrectGuessedLetters.indexOf(String.valueOf(letter)) == -1
+                                && correctGuessedLetters.indexOf(String.valueOf(letter)) == -1) {
+                            letterCount[letterInt]++;
+                            totalLetters += 1;
                         }
                     }
                 }
@@ -181,27 +191,24 @@ public class HangmanPlayer {
 
         char guess = ' ';
 
-        // Finds the largest element in the array (letter with highest count) and
-        // guesses that letter.
-        int max = 0;
+        // Picks a letter from the array at random.
+        // Uses the frequency of each letter as the weight for the random generation.
+        // For example, if a letter appears in 60% of the remaining possible words then
+        // it has a 60% chance of being picked.
+        int currentWeightSum = 0;
+        if (totalLetters == 0) {
+            System.out.println("total Letters Zero");
+        }
+        int randomGuess = RNG.nextInt(totalLetters);
 
-        letterLoop: for (int i = 0; i < 26; i++) {
-            for (int j = 0; j < incorrectGuessedLetters.length(); j++) {
-                if (i == incorrectGuessedLetters.charAt(j) - 'a') {
-                    continue letterLoop;
-                }
-            }
+        for (int i = 0; i < 26; i++) {
 
-            for (int j = 0; j < correctGuessedLetters.length(); j++) {
-                if (i == correctGuessedLetters.charAt(j) - 'a') {
-                    continue letterLoop;
-                }
-            }
-
-            if (letterCount[i] > max) {
-                max = letterCount[i];
+            currentWeightSum += letterCount[i];
+            if (randomGuess < currentWeightSum) {
                 guess = (char) (i + 'a');
+                break;
             }
+
         }
 
         // Need to save the guess so it can be used in the feedback method.
@@ -225,6 +232,9 @@ public class HangmanPlayer {
         // Update incorrectGuessedLetters using the isCorrectGuess and the previousGuess
         if (!isCorrectGuess) {
             incorrectGuessedLetters.append(previousGuess);
+        } else {
+            // If the guess is correct update correctGuessedLetters
+            correctGuessedLetters.append(previousGuess);
         }
     }
 }
