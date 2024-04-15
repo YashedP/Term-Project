@@ -13,8 +13,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -23,7 +24,7 @@ public class HangmanPlayer {
     private final String[][] masterWordMatrix = new String[23][];
 
     // Linked List that will be used to hold all possible words for a given guess.
-    private final LinkedList<String> currentPossibleWords = new LinkedList<String>();
+    private final ArrayList<String> currentPossibleWords = new ArrayList<String>();
 
     // Holds the length of the current hidden string
     private int hiddenLength;
@@ -39,7 +40,7 @@ public class HangmanPlayer {
 
     // Keeps track what characters have been found in the current word being checked
     // so far
-    private HashSet<Integer> characterChecked = new HashSet<Integer>();
+    private HashMap<Integer, Integer> characterChecked = new HashMap<Integer, Integer>();
 
     // First guess
     private char[] firstGuess = { 'a', 'a', 'a', 'a', 'e', 'e', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'i', 'i', 'i',
@@ -122,8 +123,11 @@ public class HangmanPlayer {
             // Resets the incorrectGuessedLetters and correctGuessedLetters
             incorrectGuessedLetters.setLength(0);
             correctGuessedLetters.setLength(0);
+            characterChecked.clear();
+            previousGuess = ' ';
 
-            return firstGuess[hiddenLength - 2];
+
+            previousGuess = firstGuess[hiddenLength - 2];
         }
 
         // Creates the String Builder that will be used to create the Regex Pattern.
@@ -168,15 +172,15 @@ public class HangmanPlayer {
                         // If the letter is already not in the HashSet meaning it already occurs in the
                         // word
                         // Then increase the count of that letter.
-                        if (characterChecked.add(letter)) {
-                            letterCount[letter]++;
-                        }
+                        characterChecked.put(letter, characterChecked.getOrDefault(letter, 0) + 1);
+                    letterCount[letter]++;
                     }
                 }
             } else {
                 // If it does not match, it removes the string from the list.
                 iterator.remove();
             }
+
         }
 
         char guess = ' ';
@@ -204,9 +208,9 @@ public class HangmanPlayer {
             }
         }
 
+
         // Need to save the guess so it can be used in the feedback method.
         previousGuess = guess;
-
         return guess;
     }
 
