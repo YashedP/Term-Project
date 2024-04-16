@@ -1,6 +1,7 @@
 /*
   Authors (group members): Yash Jani, Khurram Valiyev, Vincent Frogale, Samuel Kaguima
-  Email addresses of group members: yjani2023@my.fit.edu, vfrogale2023@my.fit.edu, kvaliyev2022@my.fit.edu
+  Email addresses of group members: yjani2023@my.fit.edu, vfrogale2023@my.fit.edu, kvaliyev2022@my.fit.edu, skaguima2022@my.fit.edu
+
   Group name: groupName
 
   Course: CSE 2010
