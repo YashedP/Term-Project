@@ -245,7 +245,6 @@ public class HangmanPlayer {
         }
         // Need to save the guess so it can be used in the feedback method.
         previousGuess = guess;
-        //letterCounts(currentPossibleWords);
         return guess;
     }
 
