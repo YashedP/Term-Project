@@ -97,6 +97,5 @@ public class Test {
 
         System.out.println("totalTime: " + totalTime);
         System.out.println("Average guess time: " + totalTime / 6);
-        // LETS FUCKING GOOO IT FUCKING WOKRED, LETS FUCKING GOOOOOOOOOOOOOOOOOOO
     }
 }
