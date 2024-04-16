@@ -211,6 +211,8 @@ public class HangmanPlayer {
 
         // Need to save the guess so it can be used in the feedback method.
         previousGuess = guess;
+        // print array size
+        System.out.println("Array size: " + currentPossibleWords.size());
         return guess;
     }
 
