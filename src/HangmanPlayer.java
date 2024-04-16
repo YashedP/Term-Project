@@ -1,6 +1,6 @@
 /*
-  Authors (group members): Yash Jani, Khurram Valiyev, Vincent Frogale, Sam Kaguma
-  Email addresses of group members: yjani2023@my.fit.edu, vfrogale2023@my.fit.edu
+  Authors (group members): Yash Jani, Khurram Valiyev, Vincent Frogale, Samuel Kaguima
+  Email addresses of group members: yjani2023@my.fit.edu, vfrogale2023@my.fit.edu, kvaliyev2022@my.fit.edu
   Group name: groupName
 
   Course: CSE 2010
@@ -12,19 +12,20 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.ArrayList;
 
 public class HangmanPlayer {
     // Array that will store every word in the word list.
     private final String[][] masterWordMatrix = new String[23][];
 
     // Linked List that will be used to hold all possible words for a given guess.
-    private final ArrayList<String> currentPossibleWords = new ArrayList<String>();
+    private final LinkedList<String> currentPossibleWords = new LinkedList<String>();
 
     // Holds the length of the current hidden string
     private int hiddenLength;
@@ -40,10 +41,10 @@ public class HangmanPlayer {
 
     // Keeps track what characters have been found in the current word being checked
     // so far
-    private HashMap<Integer, Integer> characterChecked = new HashMap<Integer, Integer>();
+    private HashSet<Integer> characterChecked = new HashSet<Integer>();
 
     // First guess
-    private char[] firstGuess = { 'a', 'a', 'a', 'a', 'e', 'e', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'i', 'i', 'i',
+    private char[] firstGuess = { 'a', 'a', 'e', 'a', 'e', 'e', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'i', 'i', 'i',
             'o', 'o', 'o', 'o', 'o', 'a' };
 
     // initialize HangmanPlayer with a file of English words
@@ -124,10 +125,10 @@ public class HangmanPlayer {
             incorrectGuessedLetters.setLength(0);
             correctGuessedLetters.setLength(0);
             characterChecked.clear();
-            previousGuess = ' ';
 
-
+            // Returns the first guess
             previousGuess = firstGuess[hiddenLength - 2];
+            return firstGuess[hiddenLength - 2];
         }
 
         // Creates the String Builder that will be used to create the Regex Pattern.
@@ -142,13 +143,33 @@ public class HangmanPlayer {
         }
 
         // Creates the regex pattern that will be used to check each word in the list.
-        String regexString;
-        if (incorrectGuessedLetters.isEmpty()) {
-            regexString = "^.*" + currentWordBuilder + ".*$";
+        StringBuilder regexString = new StringBuilder();
+        if (incorrectGuessedLetters.isEmpty() && correctGuessedLetters.length() == 0){
+            regexString.append("^.*" + currentWordBuilder + ".*$");
+        } else if (incorrectGuessedLetters.isEmpty() && correctGuessedLetters.length() != 0) {
+            regexString.append("^.*");
+            for (int i = 0; i < currentWordBuilder.length(); i++) {
+                if (currentWordBuilder.charAt(i) == '.') {
+                    regexString.append("[^" + correctGuessedLetters + "]");
+                } else {
+                    regexString.append(currentWordBuilder.charAt(i));
+                }
+            }
+            regexString.append(".*$");
+        } else if (correctGuessedLetters.length() == 0 && incorrectGuessedLetters.length() != 0) {
+            regexString.append("^(?!.*[" + incorrectGuessedLetters + "]).*" + currentWordBuilder + ".*$");
         } else {
-            regexString = "^(?!.*[" + incorrectGuessedLetters + "]).*" + currentWordBuilder + ".*$";
+            regexString.append("^(?!.*[" + incorrectGuessedLetters + "]).*");
+            for (int i = 0; i < currentWordBuilder.length(); i++) {
+                if (currentWordBuilder.charAt(i) == '.') {
+                    regexString.append("[^" + correctGuessedLetters + "]");
+                } else {
+                    regexString.append(currentWordBuilder.charAt(i));
+                }
+            }
+            regexString.append(".*$");
         }
-        Matcher matcher = Pattern.compile(regexString).matcher("");
+        Matcher matcher = Pattern.compile(regexString.toString()).matcher("");
 
         // Create a linked list iterator
         Iterator<String> iterator = currentPossibleWords.iterator();
@@ -161,21 +182,21 @@ public class HangmanPlayer {
             // Checks if the current word matches the current pattern.
             if (matcher.reset(word).matches()) {
                 // If the words matches, it adds all characters to the letterCount.
-                // Clear the HashSet to start anew
+                // Clear the hashset to start anew
                 characterChecked.clear();
-
                 for (int i = 0; i < hiddenLength; i++) {
                     // Only counts letters in places that haven't been guessed yet
                     if (currentWordBuilder.charAt(i) == '.') {
                         int letter = word.charAt(i) - 'a';
 
-                        // If the letter is already not in the HashSet meaning it already occurs in the
-                        // word
-                        // Then increase the count of that letter.
-                        characterChecked.put(letter, characterChecked.getOrDefault(letter, 0) + 1);
-                    letterCount[letter]++;
+                        // If the letter is already not in the hashset meaning it already occurs in the word
+                        // Then increase the count of that letter
+                        if (characterChecked.add(letter)) {
+                            letterCount[letter]++;
+                        }
                     }
                 }
+            
             } else {
                 // If it does not match, it removes the string from the list.
                 iterator.remove();
@@ -183,7 +204,7 @@ public class HangmanPlayer {
 
         }
 
-        char guess = ' ';
+        ArrayList<Character> guesses = new ArrayList<>(); // In case of a tie
 
         // Finds the largest element in the array (letter with highest count) and
         // guesses that letter.
@@ -204,15 +225,27 @@ public class HangmanPlayer {
 
             if (letterCount[i] > max) {
                 max = letterCount[i];
-                guess = (char) (i + 'a');
+                guesses.clear();
+                guesses.add((char) (i + 'a'));
+            } else if (letterCount[i] == max) {
+                guesses.add((char) (i + 'a'));
             }
         }
 
-
+        // In the case ofa tie where 2 or more letters have the same max count, guess will be done on the letter frequency of the English language.
+        String letterFrequency = "eariotnslcudpmhgbfywkvxzjq";
+        char guess = ' ';
+        if (guesses.size() > 0) {
+            for (char c : letterFrequency.toCharArray()) {
+                if (guesses.contains(c)) {
+                    guess = c;
+                    break;
+                }
+            }
+        }
         // Need to save the guess so it can be used in the feedback method.
         previousGuess = guess;
-        // print array size
-        System.out.println("Array size: " + currentPossibleWords.size());
+        //letterCounts(currentPossibleWords);
         return guess;
     }
 
@@ -233,4 +266,5 @@ public class HangmanPlayer {
             incorrectGuessedLetters.append(previousGuess);
         }
     }
+
 }
