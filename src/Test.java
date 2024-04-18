@@ -33,69 +33,11 @@ public class Test {
         //    System.out.println("that matches!");
         // }
 
-        System.out.println("\nThe word is \"nambe\"");
-        double totalTime = 0;
-        double deltaTime = 0;
-
-        startTime = System.nanoTime();
-        char letter1 = testPlayer.guess("     ", true);
-        // System.out.println(testPlayer.guess("     ", true));
-        endTime = System.nanoTime();
-        deltaTime = (endTime - startTime) / 1000000.0;
-        System.out.println("Guess 1: " + letter1 + ", time:" + deltaTime);
-        totalTime += deltaTime;
-
-        testPlayer.feedback(true, " a   ");
-
-        startTime = System.nanoTime();
-        char letter2 = testPlayer.guess(" a   ", false);
-        // System.out.println(testPlayer.guess(" a   ", false));
-        endTime = System.nanoTime();
-        deltaTime = (endTime - startTime) / 1000000.0;
-        System.out.println("Guess 2: " + letter2 + ", time:" + deltaTime);
-        totalTime += deltaTime;
-
-        testPlayer.feedback(false, " a   ");
-
-        startTime = System.nanoTime();
-        char letter3 = testPlayer.guess(" a   ", false);
-        // System.out.println(testPlayer.guess(" a   ", false));
-        endTime = System.nanoTime();
-        deltaTime = (endTime - startTime) / 1000000.0;
-        System.out.println("Guess 3: " + letter3 + ", time:" + deltaTime);
-        totalTime += deltaTime;
-
-        testPlayer.feedback(true, "na   ");
-
-        startTime = System.nanoTime();
-        char letter4 = testPlayer.guess("na   ", false);
-        // System.out.println(testPlayer.guess("na   ", false));
-        endTime = System.nanoTime();
-        deltaTime = (endTime - startTime) / 1000000.0;
-        System.out.println("Guess 4: " + letter4 + ", time:" + deltaTime);
-        totalTime += deltaTime;
-
-        testPlayer.feedback(true, "na  e");
-
-        startTime = System.nanoTime();
-        char letter5 = testPlayer.guess("na  e", false);
-        // System.out.println(testPlayer.guess("na  e", false));
-        endTime = System.nanoTime();
-        deltaTime = (endTime - startTime) / 1000000.0;
-        System.out.println("Guess 5: " + letter5 + ", time:" + deltaTime);
-        totalTime += deltaTime;
-
-        testPlayer.feedback(true, "na be");
-
-        startTime = System.nanoTime();
-        char letter6 = testPlayer.guess("na be", false);
-        // System.out.println(testPlayer.guess("na be", false));
-        endTime = System.nanoTime();
-        deltaTime = (endTime - startTime) / 1000000.0;
-        System.out.println("Guess 6: " + letter6 + ", time:" + deltaTime);
-        totalTime += deltaTime;
-
-        System.out.println("totalTime: " + totalTime);
-        System.out.println("Average guess time: " + totalTime / 6);
+        System.out.println("The word is aardvark");
+        System.out.println("Guess: " + testPlayer.guess("        ", true));
+        testPlayer.feedback(false, "        ");
+        System.out.println("Guess: " + testPlayer.guess("        ", false));
+        testPlayer.feedback(true, "aa   a  ");
+        System.out.println("Guess: " + testPlayer.guess("aa   a  ", false));
     }
 }

@@ -16,7 +16,7 @@
             "request": "launch",
             "mainClass": "EvalHangmanPlayer",
             "projectName": "Term Project_ac588b6d",
-            "args": "words.txt hiddenWords2.txt"
+            "args": "words.txt hiddenWords1.txt"
         },
         {
             "type": "java",
