@@ -140,43 +140,16 @@ public class HangmanPlayer {
             }
         }
 
-        // Creates the regex pattern that will be used to check each word in the list.
-        StringBuilder regexString = new StringBuilder();
-        if (incorrectGuessedLetters.isEmpty() && correctGuessedLetters.isEmpty()) {
-            regexString.append("^.*" + currentWordBuilder + ".*$");
-        } else if (incorrectGuessedLetters.isEmpty() && !correctGuessedLetters.isEmpty()) {
-            regexString.append("^.*");
-            for (int i = 0; i < currentWordBuilder.length(); i++) {
-                if (currentWordBuilder.charAt(i) == '.') {
-                    regexString.append("[^" + correctGuessedLetters + "]");
-                } else {
-                    regexString.append(currentWordBuilder.charAt(i));
-                }
-            }
-            regexString.append(".*$");
-        } else if (correctGuessedLetters.isEmpty() && !incorrectGuessedLetters.isEmpty()) {
-            regexString.append("^(?!.*[" + incorrectGuessedLetters + "]).*" + currentWordBuilder + ".*$");
-        } else {
-            regexString.append("^(?!.*[" + incorrectGuessedLetters + "]).*");
-            for (int i = 0; i < currentWordBuilder.length(); i++) {
-                if (currentWordBuilder.charAt(i) == '.') {
-                    regexString.append("[^" + correctGuessedLetters + "]");
-                } else {
-                    regexString.append(currentWordBuilder.charAt(i));
-                }
-            }
-            regexString.append(".*$");
-        }
-        Matcher matcher = Pattern.compile(regexString.toString()).matcher("");
-
         int[] letterCount = new int[26];
+        
+        matchesPreq(currentWord);
 
         for (int i = 0; i < masterWordMatrix[hiddenLength - 2].length; i++) {
             if (!possibleWords[i]) {
                 continue;
             }
 
-            if (matcher.reset(masterWordMatrix[hiddenLength - 2][i]).matches()) {
+            if (matches(masterWordMatrix[hiddenLength - 2][i], currentWord)) {
                 characterChecked.clear();
                 for (int j = 0; j < hiddenLength; j++) {
                     if (currentWordBuilder.charAt(j) == '.') {
@@ -253,4 +226,43 @@ public class HangmanPlayer {
         }
     }
 
+    public void matchesPreq(String currentWord) {
+        incorrectGuessesIndexes.clear();
+        correctGuessesIndexes.clear();
+
+        for (int i = 0; i < currentWord.length(); i++) {
+            if (currentWord.charAt(i) == ' ') {
+                incorrectGuessesIndexes.add(i);
+            } else {
+                correctGuessesIndexes.add(i);
+            }
+        }
+    }
+    
+    private ArrayList<Integer> correctGuessesIndexes = new ArrayList<Integer>();
+    private ArrayList<Integer> incorrectGuessesIndexes = new ArrayList<Integer>();
+
+    public boolean matches(String word, String currentWord) {
+        for (int i = 0; i < correctGuessesIndexes.size(); i++) {
+            if (word.charAt(correctGuessesIndexes.get(i)) != currentWord.charAt(correctGuessesIndexes.get(i))) {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < incorrectGuessesIndexes.size(); i++) {
+            for (int j = 0; j < correctGuessedLetters.length(); j++) {
+                if (correctGuessedLetters.charAt(j) == word.charAt(incorrectGuessesIndexes.get(i))) {
+                    return false;
+                }
+            }
+
+            for (int j = 0; j < incorrectGuessedLetters.length(); j++) {
+                if (incorrectGuessedLetters.charAt(j) == word.charAt(incorrectGuessesIndexes.get(i))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
